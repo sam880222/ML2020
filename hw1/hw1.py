@@ -1,7 +1,6 @@
 import sys
 import pandas as pd
 import numpy as np
-from google.colab import drive 
 
 # import training data
 data = pd.read_csv('./train.csv', encoding = 'big5')
