@@ -2,9 +2,6 @@ import numpy as np
 import pandas as pd
 import csv
 import sys
-trace_hour = 8
-removed_features = [1, 10, 14, 15, 16, 17]
-features = 18 - len(removed_features)
 # Extract Feachers
 testdata = pd.read_csv(sys.argv[1], header = None, encoding = 'big5')
 test_data = testdata.iloc[:, 2:]
@@ -12,33 +9,32 @@ test_data[test_data == 'NR'] = 0
 test_data = test_data.to_numpy()
 
 
-test_x = np.empty([240, features * trace_hour], dtype = float)
+test_x = np.empty([240, 18*9], dtype = float)
 for i in range(240):
-    tmp = test_data[18 * i: 18* (i + 1), -trace_hour:]
-    test_x[i, :] = np.delete(tmp, removed_features, axis = 0).reshape(1, -1)
+    test_x[i, :] = test_data[18 * i: 18* (i + 1), :].reshape(1, -1)
 
 # preprocess wrong data
 for n in range(240):
-    for feature in range(features):
-        for time in range(trace_hour):
-            if test_x[n][feature * trace_hour + time] < 0:
+    for feature in range(18):
+        for time in range(9):
+            if test_x[n][feature * 9 + time] < 0:
                 #print(test_x[n][feature * 9 + time])
                 neighbor_n = 0
                 neighbor_v = 0.0
                 for i in range (time - 1, time + 2):
-                    if i >=0 and i < trace_hour and test_x[n][feature * trace_hour + i] > 0:
+                    if i >=0 and i < 9 and test_x[n][feature * 9 + i] > 0:
                         neighbor_n += 1
-                        neighbor_v += test_x[n][feature * trace_hour + i]
+                        neighbor_v += test_x[n][feature * 9 + i]
                 if neighbor_n == 0:
                     j = time + 1
-                    while j < trace_hour:
-                        if test_x[n][feature * trace_hour + j] > 0:
+                    while j < 9:
+                        if test_x[n][feature * 9 + j] > 0:
                             neighbor_n = 1
-                            neighbor_v = test_x[n][feature * trace_hour + j]
+                            neighbor_v = test_x[n][feature * 9 + j]
                             break
                         else:
                             j += 1
-                test_x[n][feature * trace_hour + time] = neighbor_v/neighbor_n
+                test_x[n][feature * 9 + time] = neighbor_v/neighbor_n
                 #print(test_x[n][feature * 9 + time])
 
 
@@ -51,7 +47,6 @@ for i in range(len(test_x)):
 test_x = np.concatenate((np.ones([240, 1]), test_x), axis = 1).astype(float)
 
 # predict
-
 w = np.load('weight_best.npy')
 ans_y = np.dot(test_x, w)
 ans_y = np.round(ans_y)

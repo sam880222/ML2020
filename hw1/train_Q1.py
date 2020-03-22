@@ -56,15 +56,15 @@ for month in range(12):
 #print(y)
 
 # normalize
-"""mean_x = np.mean(x, axis = 0) #18 * 9 
+mean_x = np.mean(x, axis = 0) #18 * 9 
 std_x = np.std(x, axis = 0) #18 * 9 
 for i in range(len(x)): #12 * 471
     for j in range(len(x[0])): #18 * 9 
         if std_x[j] != 0:
-            x[i][j] = (x[i][j] - mean_x[j]) / std_x[j]"""
+            x[i][j] = (x[i][j] - mean_x[j]) / std_x[j]
 
 # Adagrad
-learning_rate = [0.001, 0.1, 10, 1000]
+learning_rate = [0.01, 0.1, 1, 10]
 color = ['purple', 'green', 'red', 'blue']
 dim = 18 * 9 + 1
 x = np.concatenate((np.ones([12 * 471, 1]), x), axis = 1).astype(float)
@@ -87,9 +87,10 @@ for i in range(4):
         w = w - learning_rate[i] * gradient / np.sqrt(adagrad + eps)
     loss = np.sqrt(np.sum(np.power(np.dot(x, w) - y, 2))/471/12)
     L.append(loss)
-    plt.plot(range(200, iter_time+1, 10), L[20:], color = color[i], label = "rate = " + str(learning_rate[i]))
+    plt.plot(range(0, iter_time+1, 10), L, color = color[i], label = "rate = " + str(learning_rate[i]))
 plt.xlabel = ("Iteration")
 plt.ylabel = ("Loss")
 plt.legend()
+plt.tight_layout()
 plt.savefig('Q1.png')
 plt.show()

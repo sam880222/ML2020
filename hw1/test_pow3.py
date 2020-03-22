@@ -2,7 +2,12 @@ import numpy as np
 import pandas as pd
 import csv
 import sys
-trace_hour = 8
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.externals import joblib
+clf = joblib.load('pow3')
+trace_hour = 7
+power = 3
 removed_features = [1, 10, 14, 15, 16, 17]
 features = 18 - len(removed_features)
 # Extract Feachers
@@ -41,19 +46,21 @@ for n in range(240):
                 test_x[n][feature * trace_hour + time] = neighbor_v/neighbor_n
                 #print(test_x[n][feature * 9 + time])
 
-
-mean_x = np.load('mean_best.npy')
-std_x = np.load('std_best.npy')
+test_x = np.hstack((test_x**(i+1) for i in range(power)))
+mean_x = np.load('mean_pow3.npy')
+std_x = np.load('std_pow3.npy')
 for i in range(len(test_x)):
     for j in range(len(test_x[0])):
         if std_x[j] != 0:
             test_x[i][j] = (test_x[i][j] - mean_x[j]) / std_x[j]
 test_x = np.concatenate((np.ones([240, 1]), test_x), axis = 1).astype(float)
 
+
 # predict
 
-w = np.load('weight_best.npy')
-ans_y = np.dot(test_x, w)
+#w = np.load('weight_pow3.npy')
+#ans_y = np.dot(test_x, w)
+ans_y = clf.predict(test_x)
 ans_y = np.round(ans_y)
 ans_y[ans_y < 0] = 0
 
