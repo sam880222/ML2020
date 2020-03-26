@@ -7,6 +7,7 @@ from tensorflow.keras import backend
 from sklearn import preprocessing
 from keras import losses
 from keras import metrics
+from keras import regularizers
 # Some parameters for training    
 max_iter = 50
 batch_size = 12
@@ -17,7 +18,7 @@ X_train_fpath = sys.argv[2]
 Y_train_fpath = sys.argv[3]
 feature_to_remove = ['detailed household and family stat', 'country of birth father', 'country of birth mother']#['family members under 18', 'marital stat', 'major industry code', 'major occupation code', 'hispanic origin', 'region of previous residence']#[, 'country of birth father', 'country of birth mother', 'sex', 'live in this house 1 year ago']
 validation_portion = 0.2
-with open(raw_data_path) as f:
+"""with open(raw_data_path) as f:
     x = np.array([line.strip('\n').split(',')[1:] for line in f], dtype = str)    
 x = x.T
 
@@ -36,7 +37,7 @@ place = 0
 for d in data:
     index[d[0]] = [j for j in range(place, place + d[1])]
     place += d[1]
-dim = place
+dim = place"""
 #print(dim)
 #print(index)
 
@@ -102,10 +103,10 @@ with open(Y_train_fpath) as f:
     next(f)
     y = np.array([line.strip('\n').split(',')[1] for line in f], dtype = float)
 
-removed_dims = list(np.argwhere(label == ' ?')[:, 1]) + list(np.argwhere(label == ' Not in universe')[:, 1])
+"""removed_dims = list(np.argwhere(label == ' ?')[:, 1]) + list(np.argwhere(label == ' Not in universe')[:, 1])
 for feature in feature_to_remove:
     removed_dims += index[feature]
-removed_dims = list(set(removed_dims))
+removed_dims = list(set(removed_dims))"""
 #print(removed_dims)
 #x = np.delete(x, removed_dims, axis = 1)
 
@@ -116,7 +117,7 @@ std_x = np.std(x[int(len(x)*validation_portion):], axis = 0)
 std_x[std_x == 0] = 10e-9
 for i in range(len(x)):
     x[i] = (x[i] - mean_x) / std_x
-x = np.concatenate((x, np.ones([len(x), 1])), axis = 1).astype(float)    #append bias
+#x = np.concatenate((x, np.ones([len(x), 1])), axis = 1).astype(float)    #append bias
 
 X_train = x[int(len(x)*validation_portion):]
 Y_train = y[int(len(x)*validation_portion):]
@@ -142,10 +143,10 @@ step = 1
 
 # Iterative training
 model = Sequential()
-model.add(Dense(28, activation='sigmoid', input_dim = 511))
-#model.add(Dense(32, activation='relu'))
-#model.add(Dense(32, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
+model.add(Dense(32, activation='relu', input_dim = 510, kernel_regularizer=regularizers.l2(0.002)))
+#model.add(Dense(32, activation='relu', activity_regularizer=regularizers.l2(0.01)))
+model.add(Dense(8, activation='relu', kernel_regularizer=regularizers.l2(0.002)))
+model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.001)))
 #model.add(Dense(units = 1, kernel_initializer = 'he_normal'))
 model.compile(optimizer=Adam(lr=0.0003), loss=losses.binary_crossentropy, metrics=[metrics.binary_accuracy])
 
@@ -176,6 +177,6 @@ with open(X_train_fpath) as f:
 features = np.array(content)
 for i in ind[0:10]:
     print(i, features[i], w[i])"""
-np.save('mean_best.npy', mean_x)
-np.save('std_best.npy', std_x)
+#np.save('mean_best.npy', mean_x)
+#np.save('std_best.npy', std_x)
 model.save('NNet_model.h5')
