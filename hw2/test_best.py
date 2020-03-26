@@ -36,7 +36,7 @@ feature_not01 = [0, 126, 210, 211, 212, 507, 358]
 for i in feature_not01[:-1]:
     X_test = np.concatenate((X_test, (X_test[:, i]**2).reshape(-1, 1)), axis = 1).astype(float) 
     X_test = np.concatenate((X_test, (X_test[:, i]**3).reshape(-1, 1)), axis = 1).astype(float)
-X_test = np.concatenate((X_test, (X_test[:, 1]**4).reshape(-1, 1)), axis = 1).astype(float)
+X_test = np.concatenate((X_test, (X_test[:, 0]**4).reshape(-1, 1)), axis = 1).astype(float)
 removed_dims = [286, 299, 302, 10, 198, 370, 16, 78, 309, 374, 102, 95, 166, 455] #[7, 10, 14, 16, 17, 25, 34, 43, 48, 55, 59, 60, 65, 70, 77, 78, 95, 102, 108, 109, 110, 142, 149, 150, 154, 160, 166, 172, 174, 183, 196, 197, 198, 199, 208, 221, 229, 231, 239, 241, 244, 245, 252, 255, 266, 274, 286, 291, 299, 302, 309, 317, 324, 326, 332, 338, 345, 347, 353, 364, 370, 374, 376, 387, 395, 400, 431, 439, 440, 448, 455, 456, 478]
 #removed_dims += list(np.argwhere(label == ' ?')[:, 1]) + list(np.argwhere(label == ' Not in universe')[:, 1])
 removed_dims = list(set(removed_dims))

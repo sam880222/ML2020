@@ -6,9 +6,9 @@ batch_size = 16
 learning_rate = 0.06
 c = 0.00025#0.0263
 np.random.seed(0)
-raw_data_path = sys.argv[1]
-X_train_fpath = sys.argv[2]
-Y_train_fpath = sys.argv[3]
+#raw_data_path = sys.argv[1]
+X_train_fpath = sys.argv[1]
+Y_train_fpath = sys.argv[2]
 validation_portion = 0.2
 feature_not01 = [0, 126, 210, 211, 212, 507, 358]
 """feature_to_remove = ['detailed household and family stat', 'country of birth father', 'country of birth mother']#['family members under 18', 'marital stat', 'major industry code', 'major occupation code', 'hispanic origin', 'region of previous residence']#[, 'country of birth father', 'country of birth mother', 'sex', 'live in this house 1 year ago']
@@ -102,7 +102,7 @@ with open(Y_train_fpath) as f:
 for i in feature_not01[:-1]:
     x = np.concatenate((x, (x[:, i]**2).reshape(-1, 1)), axis = 1).astype(float) 
     x = np.concatenate((x, (x[:, i]**3).reshape(-1, 1)), axis = 1).astype(float)
-x = np.concatenate((x, (x[:, 1]**4).reshape(-1, 1)), axis = 1).astype(float)
+x = np.concatenate((x, (x[:, 0]**4).reshape(-1, 1)), axis = 1).astype(float)
 removed_dims = [286, 299, 302, 10, 198, 370, 16, 78, 309, 374, 102, 95, 166, 455] #[7, 10, 14, 16, 43, 48, 51, 55, 77, 78, 95, 100, 102, 112, 142, 148, 150, 154, 166, 169, 172, 197, 198, 199, 219, 223, 226, 231, 240, 248, 250, 251, 252, 264, 266, 269, 286, 292, 298, 299, 300, 302, 304, 315, 323, 324, 332, 334, 338, 339, 343, 347, 349, 360, 363, 370, 372, 374, 380, 387, 395, 397, 400, 407, 418, 426, 447, 464, 476, 482, 495, 501, 506]#[7, 10, 14, 16, 17, 25, 34, 43, 48, 55, 59, 60, 65, 70, 77, 78, 95, 102, 108, 109, 110, 142, 149, 150, 154, 160, 166, 172, 174, 183, 196, 197, 198, 199, 208, 221, 229, 231, 239, 241, 244, 245, 252, 255, 266, 274, 286, 291, 299, 302, 309, 317, 324, 326, 332, 338, 345, 347, 353, 364, 370, 374, 376, 387, 395, 400, 431, 439, 440, 448, 455, 456, 478]
 #removed_dims += list(np.argwhere(label == ' ?')[:, 1]) + list(np.argwhere(label == ' Not in universe')[:, 1])
 """for feature in feature_to_remove:
