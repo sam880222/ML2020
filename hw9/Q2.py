@@ -83,7 +83,7 @@ class AE(nn.Module):
             nn.ConvTranspose2d(128, 64, 9, stride=1),
             nn.ReLU(True),
             nn.ConvTranspose2d(64, 3, 17, stride=1),
-            nn.Sigmoid()
+            nn.Tanh()
         )
 
     def forward(self, x):
@@ -172,7 +172,7 @@ dataloader = DataLoader(dataset, batch_size=8, shuffle=False)
 for x in dataloader:
     latents, recs = model(x.cuda())
 # print(recs[recs<0])
-recs = recs.cpu().detach().numpy()
+recs = ((recs+1)/2 ).cpu().detach().numpy()
 recs = recs.transpose(0, 2, 3, 1)
 for i, img in enumerate(recs):
     plt.subplot(2, 6, 6+i+1, xticks=[], yticks=[])
