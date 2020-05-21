@@ -8,7 +8,7 @@ import pandas as pd
 from torch.utils.data import DataLoader, Dataset
 import time
 import sys
-#os.environ["CUDA_VISIBLE_DEVICES"] = '3'
+os.environ["CUDA_VISIBLE_DEVICES"] = '2'
 def readfile(path, label):
     # label 是一個 boolean variable，代表需不需要回傳 y 值
     image_dir = sorted(os.listdir(path))

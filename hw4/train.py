@@ -10,7 +10,7 @@ import os
 import argparse
 import sys
 import random
-#os.environ["CUDA_VISIBLE_DEVICES"] = '3'
+os.environ["CUDA_VISIBLE_DEVICES"] = '2'
 # 定義一些函式
 def fix_sentence(lines):       
     lines = [line.replace("can \' t", "can not") for line in lines]
